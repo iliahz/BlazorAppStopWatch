@@ -1,0 +1,167 @@
+﻿@page "/stopwatch"
+@using System;
+@using System.Diagnostics;
+@implements IDisposable
+
+<div>@StartTime.ToString("hh:mm:ss.fff")</div>
+<div>@StopTime.ToString("hh:mm:ss.fff")</div>
+<div>@timespan.TotalMilliseconds</div>
+<div>@SecTemeSpan.Hours.ToString("00") : @SecTemeSpan.Minutes.ToString("00") : @SecTemeSpan.Seconds.ToString("00") </div>
+<div>@SecDecSpan.ToString("00.000") </div>
+@{
+    int clocksize = 200;
+    double sec10fontsize = System.Math.Round(clocksize / 10.0, 1);
+    double minfontsize = System.Math.Round(clocksize / 20.0, 1);
+}
+
+
+<div class="clock" style="width: @(clocksize)px; height: @(clocksize)px;">
+    <div class="clockface"></div>
+    @for (double deg = 0; deg < 180; deg += 3.6)
+    {
+        <div class="marksec" style="transform: translateX(-50%); transform: rotate(@deg.ToString("0.0deg;")"></div>
+
+    }
+    <div class="cirklemark"></div>
+    @for (double deg = 0; deg < 180; deg += 36.0)
+    {
+        <div class="marksec10" style="transform: translateX(-50%); transform: translateX(-1px) rotate(@deg.ToString("0.0deg;")"></div>
+    }
+    <div class="cirklemark10"></div>
+    <div class="clockborder"></div>
+
+    @for (int decsec = 10; decsec <= 100; decsec += 10)
+    {
+        double deg = decsec * 3.6;
+        <div class="figpoz" style="transform: rotate(@deg.ToString("0.0deg;")">
+            <div class="figvalue" style="font-size: @(sec10fontsize)px; transform: rotate(@deg.ToString("-0.0deg;")">@decsec</div>
+        </div>
+    }
+    <div class="clockmin">
+
+        @for (double deg = 0; deg < 180; deg += 6)
+        {
+            <div class="marksec" style="transform: rotate(@deg.ToString("0.0deg;"));"></div>
+
+        }
+        <div class="cirklemark"></div>
+        @for (double deg = 0; deg < 180; deg += 30.0)
+        {
+            <div class="marksec10" style="transform: translateX(-50%); transform: translateX(-1px) rotate(@deg.ToString("0.0deg;")"></div>
+        }
+
+        <div class="cirklemark10"></div>
+        @for (int min = 5; min <= 60; min += 5)
+        {
+            double deg = min * 6.0;
+            <div class="figpoz" style="transform: rotate(@deg.ToString("0.0deg;")">
+                <div class="figvalue" style="font-size: @(minfontsize)px;transform: rotate(@deg.ToString("-0.0deg;")">@min</div>
+            </div>
+        }
+        <div class="clockborder"></div>
+    </div>
+
+    <div class="minute" style="transform: translateX(-50%) rotate(@(min)deg);"></div>
+    <div class="second" style="transform: translateX(-50%) rotate(@(sec)deg);"></div>
+
+    @*  <div class="box"></div>
+        <div class="box90"></div>*@
+    <div class="clockcenter"></div>
+
+</div>
+<br />
+<button disabled="@start" @onclick="StartOnClick">Start</button>
+<button disabled="@(!start)" @onclick="PauseOnClick">
+    @if (!pause)
+    {
+        <span class="oi oi-media-pause"></span>
+    }
+    else
+    {
+        <span class="oi oi-media-play"></span>
+    }
+</button>
+
+
+<button disabled="@(!start)" @onclick="StopOnClick">  Stop</button>
+
+@code {
+    private System.Threading.Timer Timer = null!;
+    private bool start = false;
+    private bool pause = false;
+    DateTime StartTime;
+    DateTime StopTime;
+    DateTime PreviosTime;
+    TimeSpan SecTemeSpan;
+    TimeSpan timespan;
+    double SecDecSpan;
+    private List<DateTime> kuku = new List<DateTime>();
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Timer = new System.Threading.Timer(_ =>
+        {
+            SetClock();
+
+            InvokeAsync(StateHasChanged);
+        }, null, 500, 300);
+
+    }
+    async Task StartOnClick()
+    {
+        if (!start)
+        {
+            start = true;
+            pause = false;
+            PreviosTime = DateTime.Now;
+            StartTime = PreviosTime;
+            SecTemeSpan = new TimeSpan(0, 0, 0);
+
+        }
+        await Task.Delay(10);
+    }
+    async Task PauseOnClick()
+    {
+        pause = !pause;
+        PreviosTime = DateTime.Now;
+        await Task.Delay(10);
+    }
+    async Task StopOnClick()
+    {
+        if (start)
+        {
+            StopTime=DateTime.Now;
+            start = false;
+            min = 0.0;
+            sec = 0.0;
+        }
+        await Task.Delay(10);
+    }
+    double hr, min, sec;
+    private void SetClock()
+    {
+
+        var CurrentTime = DateTime.Now;
+        if (start && !pause)
+        {
+            timespan = CurrentTime - PreviosTime;
+            SecTemeSpan += timespan;
+            SecDecSpan=SecTemeSpan.Hours * 60.0 + SecTemeSpan.Minutes*1.0 + (SecTemeSpan.Seconds*1.0 / 60.0 * 100.0)/100.0;
+            min = 360.0 * SecTemeSpan.Minutes / 60 + 6.0 * SecTemeSpan.Seconds / 60.0;
+            sec = System.Math.Round((SecTemeSpan.Seconds + SecTemeSpan.Milliseconds / 1000.0) * 6.0, 2);
+        }
+        PreviosTime = CurrentTime;
+
+    }
+
+
+
+
+    void IDisposable.Dispose()
+    {
+        Timer?.Dispose();
+
+    }
+}

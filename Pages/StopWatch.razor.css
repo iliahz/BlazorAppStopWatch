@@ -1,0 +1,138 @@
+﻿body {
+}
+
+.clock {
+    position: relative;
+    width: 300px;
+    height: 300px;
+}
+
+.clockborder, .clockminborder {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    position: absolute;
+}
+
+.clockborder {
+    border: 5px solid grey;
+}
+
+.clockminborder {
+    border: 5px solid grey;
+}
+
+.clockface, .cirklemark, .cirklemark10, .clockmin {
+    border-radius: 50%;
+    background-color: wheat;
+    position: absolute;
+}
+
+.clockface {
+    width: 100%;
+    height: 100%;
+}
+
+.cirklemark {
+    width: 90%;
+    height: 90%;
+    top: 5%;
+    left: 5%;
+}
+
+.cirklemark10 {
+    width: 86%;
+    height: 86%;
+    top: 7%;
+    left: 7%;
+}
+
+.clockmin {
+    top: 25%;
+    left: 25%;
+    width: 50%;
+    height: 50%;
+}
+
+.marksec, .marksec10 {
+    position: absolute;
+    height: calc(100% - 4px);
+    background: black;
+    z-index: 0;
+    left: 50%;
+    top: 2px;
+}
+
+.marksec {
+    width: 1px;
+}
+
+.marksec10 {
+    width: 3px;
+}
+
+.box {
+    left: 50%;
+    position: absolute;
+    width: 1px;
+    height: 100%;
+    background-color: green;
+}
+
+.box90 {
+    left: 50%;
+    position: absolute;
+    width: 1px;
+    height: 100%;
+    background-color: green;
+    transform: translateX(-50%) rotate(90deg);
+}
+
+.figpoz {
+    position: absolute;
+    top: 7%;
+    left: 7%;
+    width: 86%;
+    height: 86%;
+}
+
+.figvalue {
+    text-align: center;
+    display: block;
+    font-size: min(3vh,1.7vw);
+}
+
+.minute {
+    position: absolute;
+    top: 29%;
+    left: 50%;
+    height: 21%;
+    background-color: blue;
+    border: 3px solid blue;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    transform-origin: bottom;
+}
+
+.second {
+    position: absolute;
+    top: 7%;
+    left: 50%;
+    height: 43%;
+    background-color: red;
+    border: 2px solid red;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    transform-origin: bottom;
+}
+
+.clockcenter {
+    position: absolute;
+    top: 48.5%;
+    left: 48.5%;
+    width: 3%;
+    height: 3%;
+    border-radius: 50%;
+    background-color: black;
+    border-radius: 50%;
+}
